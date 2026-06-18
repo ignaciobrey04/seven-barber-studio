@@ -10,15 +10,26 @@
   const CLOSE_HOUR = 20;  // cierra 20hs
   const SLOT_MINUTES = 30;
 
+  /* ---- ÍCONOS SVG por tipo de servicio (heredan el color dorado) ---- */
+  const ICONS = {
+    scissors: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>',
+    eyebrow:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5c3.5-3.4 13.5-3.4 17 0"/><circle cx="12" cy="14.8" r="1.5" fill="currentColor" stroke="none"/></svg>',
+    razor:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15.5 13 5.5a3.5 3.5 0 0 1 5 5L9.5 19"/><path d="M3 15.5c0 2 1.5 3.5 3.5 3.5H10"/></svg>',
+    crown:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.6 3L12 5l5.4 6L21 8l-1.4 9H4.4z"/><path d="M5.5 20.5h13"/></svg>',
+    beard:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><path d="M9 8.5h.01M15 8.5h.01"/><path d="M9.5 13.5c.6 1 1.4 1.5 2.5 1.5s1.9-.5 2.5-1.5"/></svg>',
+    clipper:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3M11 3v3M14 3v3"/><rect x="6" y="6" width="10" height="4.5" rx="1"/><path d="M9 10.5V20a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-9.5"/></svg>',
+  };
+
   /* ---- ORIGEN ÚNICO DE SERVICIOS (precios reales) ---- */
   const SERVICES = [
-    { id: "corte",        name: "Corte",                 price: 15000, icon: "✂", desc: "Corte a tijera y máquina, lavado y peinado.", featured: false },
-    { id: "corte-ceja",   name: "Corte y Ceja",          price: 16500, icon: "✂", desc: "Corte completo + perfilado de cejas.", featured: false },
-    { id: "corte-barba",  name: "Corte y Barba",         price: 17500, icon: "✂", desc: "Corte + barba a navaja con toalla caliente.", featured: false },
-    { id: "full",         name: "Corte, Barba y Cejas",  price: 19000, icon: "★", desc: "El combo completo. Tu cambio de imagen total.", featured: true },
-    { id: "barba",        name: "Barba",                 price: 8000,  icon: "◗", desc: "Perfilado y diseño de barba a navaja.", featured: false },
-    { id: "cejas",        name: "Cejas",                 price: 4000,  icon: "◠", desc: "Perfilado y limpieza de cejas.", featured: false },
-    { id: "rapado",       name: "Rapado",                price: 10000, icon: "▮", desc: "Rapado completo y prolijo a máquina.", featured: false },
+    { id: "corte",        name: "Corte",                 price: 15000, icon: "scissors", desc: "Corte a tijera y máquina, lavado y peinado.", featured: false },
+    { id: "corte-ceja",   name: "Corte y Ceja",          price: 16500, icon: "eyebrow",  desc: "Corte completo + perfilado de cejas.", featured: false },
+    { id: "corte-barba",  name: "Corte y Barba",         price: 17500, icon: "razor",    desc: "Corte + barba a navaja con toalla caliente.", featured: false },
+    { id: "full",         name: "Corte, Barba y Cejas",  price: 19000, icon: "crown",    desc: "El combo completo. Tu cambio de imagen total.", featured: true },
+    { id: "barba",        name: "Barba",                 price: 8000,  icon: "beard",    desc: "Perfilado y diseño de barba a navaja.", featured: false }, // beard
+
+    { id: "cejas",        name: "Cejas",                 price: 4000,  icon: "eyebrow",  desc: "Perfilado y limpieza de cejas.", featured: false },
+    { id: "rapado",       name: "Rapado",                price: 10000, icon: "clipper",  desc: "Rapado completo y prolijo a máquina.", featured: false },
   ];
 
   const fmt = (n) => "$" + n.toLocaleString("es-AR");
@@ -54,7 +65,7 @@
     grid.innerHTML = SERVICES.map((s, i) => `
       <article class="service-card${s.featured ? " is-featured" : ""} reveal" data-reveal data-reveal-delay="${(i % 3) * 70}">
         ${s.featured ? '<span class="service-card__badge">Más elegido</span>' : ""}
-        <div class="service-card__icon">${s.icon}</div>
+        <div class="service-card__icon">${ICONS[s.icon] || s.icon}</div>
         <h3 class="service-card__name">${s.name}</h3>
         <p class="service-card__desc">${s.desc}</p>
         <div class="service-card__foot">
@@ -130,13 +141,16 @@
   }
   [serviceSel, timeSel, dateInput].forEach((el) => el && el.addEventListener("change", updateSummary));
 
-  // pre-seleccionar servicio al tocar "Reservar" en una card o en una galería
+  // pre-seleccionar servicio y llevar a la agenda al tocar "Reservar"
   document.addEventListener("click", (e) => {
     const trigger = e.target.closest("[data-service]");
     if (trigger && serviceSel) {
+      e.preventDefault();
       serviceSel.value = trigger.getAttribute("data-service");
       updateSummary();
-      setTimeout(() => $("#bk-name") && $("#bk-name").focus(), 600);
+      const agenda = document.getElementById("agenda");
+      if (agenda) agenda.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => $("#bk-name") && $("#bk-name").focus({ preventScroll: true }), 700);
     }
   });
 

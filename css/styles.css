@@ -277,6 +277,8 @@ button { font-family: inherit; cursor: pointer; }
   background: var(--gold-grad); color: #1a1306; padding: 4px 10px; border-radius: 50px; font-weight: 600;
 }
 .service-card__icon { font-size: 1.7rem; color: var(--gold); line-height: 1; }
+.service-card__icon svg { width: 34px; height: 34px; display: block; transition: transform .4s var(--ease); }
+.service-card:hover .service-card__icon svg { transform: scale(1.12) rotate(-4deg); }
 .service-card__name { font-family: var(--font-serif); font-size: 1.55rem; font-weight: 600; line-height: 1.15; }
 .service-card__desc { font-size: .9rem; color: var(--muted); flex: 1; }
 .service-card__foot { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 16px; border-top: 1px solid var(--line); }
