@@ -57,10 +57,13 @@ button { font-family: inherit; cursor: pointer; }
 
 /* ---------- Tipografía utilitaria ---------- */
 .gold-text {
-  background: var(--gold-grad);
+  background: linear-gradient(100deg, var(--gold-deep) 0%, var(--gold) 24%, var(--gold-light) 44%, #fff4d4 52%, var(--gold-light) 60%, var(--gold) 76%, var(--gold-deep) 100%);
+  background-size: 220% auto;
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent; color: transparent;
+  animation: goldShimmer 7s linear infinite;
 }
+@keyframes goldShimmer { to { background-position: 220% center; } }
 .stars { color: var(--gold); letter-spacing: 2px; }
 .link-gold { color: var(--gold-light); border-bottom: 1px solid rgba(201,162,74,.4); transition: border-color .3s; }
 .link-gold:hover { border-color: var(--gold); }
@@ -179,6 +182,8 @@ button { font-family: inherit; cursor: pointer; }
   width: clamp(180px, 30vw, 260px); margin: 0 auto 22px; display: block;
   filter: drop-shadow(0 8px 30px rgba(0,0,0,.6));
 }
+.hero__logo.is-visible { animation: floatLogo 6s ease-in-out infinite; }
+@keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 .hero__glow {
   position: absolute; z-index: 2; top: -10%; right: -5%; width: 50vw; height: 50vw; max-width: 620px; max-height: 620px;
   background: radial-gradient(circle, rgba(201,162,74,.16), transparent 65%);
@@ -227,7 +232,9 @@ button { font-family: inherit; cursor: pointer; }
 /* =========================================================
    MARQUEE
    ========================================================= */
-.marquee { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--char); overflow: hidden; padding: 18px 0; }
+.marquee { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--char); overflow: hidden; padding: 18px 0;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
 .marquee__track { display: flex; align-items: center; gap: 36px; width: max-content; animation: marquee 26s linear infinite; }
 .marquee__track span { font-family: var(--font-serif); font-size: 1.5rem; letter-spacing: .22em; color: var(--cream); white-space: nowrap; }
 .marquee__track i { color: var(--gold); font-style: normal; }
@@ -258,6 +265,12 @@ button { font-family: inherit; cursor: pointer; }
 }
 .service-card:hover { transform: translateY(-6px); border-color: var(--gold-deep); background: var(--char-2); }
 .service-card:hover::before { opacity: 1; }
+/* línea dorada que se dibuja arriba al hover */
+.service-card::after {
+  content: ""; position: absolute; top: 0; left: 0; height: 2px; width: 0;
+  background: var(--gold-grad); transition: width .5s var(--ease); z-index: 1;
+}
+.service-card:hover::after { width: 100%; }
 .service-card.is-featured { border-color: var(--gold-deep); }
 .service-card__badge {
   position: absolute; top: 14px; right: 14px; font-size: .6rem; letter-spacing: .14em; text-transform: uppercase;
@@ -278,12 +291,20 @@ button { font-family: inherit; cursor: pointer; }
 /* =========================================================
    GALERÍA
    ========================================================= */
-.gallery__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.gallery__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .gallery__item {
   position: relative; aspect-ratio: 4/5; overflow: hidden; border-radius: var(--radius);
-  border: 1px solid var(--line); background: var(--char);
+  border: 1px solid var(--line); background: var(--char); transition: border-color .4s, transform .5s var(--ease);
 }
+.gallery__item:hover { border-color: var(--gold-deep); }
 .gallery__item img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease), filter .5s; filter: grayscale(.15) contrast(1.02); }
+/* barrido de luz diagonal al hover */
+.gallery__item::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.22) 50%, transparent 65%);
+  transform: translateX(-120%); transition: transform .85s var(--ease);
+}
+.gallery__item:hover::after { transform: translateX(120%); }
 .gallery__item:hover img { transform: scale(1.07); filter: grayscale(0); }
 .gallery__item figcaption {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 16px 14px;
@@ -307,6 +328,7 @@ button { font-family: inherit; cursor: pointer; }
 .why__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px; }
 .why__item { text-align: center; }
 .why__icon { font-size: 1.9rem; color: var(--gold); width: 64px; height: 64px; margin: 0 auto 18px; display: grid; place-items: center; border: 1px solid var(--gold-deep); border-radius: 50%; }
+.why__icon .ico-clock { width: 30px; height: 30px; color: var(--gold); }
 .why__item h3 { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; }
 .why__item p { font-size: .92rem; color: var(--muted); }
 
@@ -373,6 +395,8 @@ button { font-family: inherit; cursor: pointer; }
 .location__list { list-style: none; margin: 30px 0; display: flex; flex-direction: column; gap: 20px; }
 .location__list li { display: flex; gap: 16px; }
 .location__ico { font-size: 1.2rem; width: 44px; height: 44px; flex: none; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; }
+.location__ico--gold { border-color: var(--gold-deep); color: var(--gold); }
+.location__ico .ico-clock { width: 22px; height: 22px; }
 .location__list strong { display: block; font-family: var(--font-serif); font-size: 1.15rem; color: var(--cream); margin-bottom: 2px; }
 .location__list div { color: var(--cream-dim); font-size: .95rem; }
 .location__list a { color: var(--gold-light); }
@@ -418,9 +442,10 @@ button { font-family: inherit; cursor: pointer; }
    ========================================================= */
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s var(--ease), transform .9s var(--ease); will-change: opacity, transform; }
 .reveal.is-visible { opacity: 1; transform: none; }
+/* Respetamos reduce-motion para las ENTRADAS, pero dejamos correr las
+   animaciones decorativas en loop (marquesina, glow, shimmer) por pedido. */
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
-  .hero__glow, .hero__pole, .marquee__track, .wa-float, .hero__scroll span { animation: none; }
   html { scroll-behavior: auto; }
 }
 
